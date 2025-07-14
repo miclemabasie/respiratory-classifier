@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h2>Upload Respiratory Audio File</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="wav_file">Select WAV file:</label>
+      <input type="file" name="wav_file" id="wav_file" accept=".wav" required class="form-control-file">
+    </div>
+    <button type="submit" class="btn btn-primary">Predict</button>
+  </form>
+
+  {% if prediction %}
+
+  {{prediction}}
+    <hr>
+    <h3>Prediction Result</h3>
+    <p><strong>Class:</strong> {{ prediction.prediction }}</p>
+    <p><strong>Probability:</strong> {{ prediction.probability|floatformat:2 }}</p>
+    <h4>All Probabilities</h4>
+    <ul>
+      {% for cls, prob in prediction.all_probabilities.items %}
+        <li>{{ cls }}: {{ prob|floatformat:2 }}</li>
+      {% endfor %}
+    </ul>
+  {% elif "error" %}
+
+    <h1>{{error}}</h1>
+
+  {% endif %}
+</div>
+{% endblock content %}
